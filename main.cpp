@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <cmath>
 #include <cctype>
+#include <vector>
+#include <algorithm>
 
 bool isValidHexadecimal(const std::string& hexNumber) {
     std::string validCharacters = "123456789ABCDEF";
@@ -47,7 +49,7 @@ int convertToDecimal(const std::string& hexNumber) {
 
         if (hexValues.find(ch) != hexValues.end()) {
             int value = hexValues[ch];
-            decimalValue += value * pow(16, power);
+            decimalValue += value * std::pow(16, power);
             power++;
         }
     }
@@ -55,67 +57,70 @@ int convertToDecimal(const std::string& hexNumber) {
     return decimalValue;
 }
 
+std::string decimalToHexadecimal(int decimalNumber) {
+    std::string hexadecimal;
+    std::vector<char> hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+
+    while (decimalNumber > 0) {
+        int remainder = decimalNumber % 16;
+        hexadecimal += hexDigits[remainder];
+        decimalNumber /= 16;
+    }
+
+    std::reverse(hexadecimal.begin(), hexadecimal.end());  // Reverse the string to get the correct hexadecimal representation
+    return hexadecimal;
+}
+
 int main() {
-    std::cout << "Enter the Hexadecimal Number: ";
-    std::string hexadecimalNumber;
-    std::getline(std::cin, hexadecimalNumber);
+    std::cout << "Enter a Hexadecimal Number or a Decimal Number: ";
+    std::string inputNumber;
+    std::getline(std::cin, inputNumber);
 
-    std::string prefix1 = "0x";
-    std::string prefix2 = "0X";
-    std::string text = "Checking this Number.........";
-    std::string text1 = "This is a Hexadecimal Number.....";
-    std::string text2 = "Converting to Decimal Number....... Please Wait!!!!!";
-    std::string errorText = "This is not a valid Hexadecimal Number. Please enter a valid Hexadecimal Number.";
+    if (inputNumber.substr(0, 2) == "0x" || inputNumber.substr(0, 2) == "0X") {
+        std::string numberToConvert = inputNumber.substr(2);
 
-    if (hexadecimalNumber.substr(0, prefix1.size()) == prefix1 || hexadecimalNumber.substr(0, prefix2.size()) == prefix2) {
-        std::string numberToConvert = hexadecimalNumber.substr(prefix1.size());
         if (isValidHexadecimal(numberToConvert) && numberToConvert != "0") {
+            std::string text = "Checking this Number.........";
+            std::string text1 = "This is a Hexadecimal Number.....";
+            std::string text2 = "Converting to Decimal Number....... Please Wait!!!!!";
+
             for (char c : text) {
+                std::cout << c << std::flush;
+                std::this_thread::sleep_for(std::chrono::milliseconds(55));  
+            }
+            std::cout << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            for (char c1 : text1) {
+                std::cout << c1 << std::flush;
+                std::this_thread::sleep_for(std::chrono::milliseconds(55));  
+            }
+            std::cout << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            for (char c2 : text2) {
+                std::cout << c2 << std::flush;
+                std::this_thread::sleep_for(std::chrono::milliseconds(55));  
+            }
+            std::cout << std::endl;
+
+            int decimalValue = convertToDecimal(numberToConvert);
+            std::cout << "Decimal Version Of This Number is: " << decimalValue << std::endl;
+        } else {
+            std::string errorText = "This is not a valid Hexadecimal Number. Please enter a valid Hexadecimal Number.";
+            for (char c : errorText) {
                 std::cout << c << std::flush;
                 std::this_thread::sleep_for(std::chrono::milliseconds(75));  
             }
             std::cout << std::endl;
-            std::this_thread::sleep_for(std::chrono::seconds(2));
-            for (char c1 : text1) {
-                std::cout << c1 << std::flush;
-                std::this_thread::sleep_for(std::chrono::milliseconds(75));  
-            }
-            std::cout << std::endl;
-            std::this_thread::sleep_for(std::chrono::seconds(2));
-            for (char c2 : text2) {
-                std::cout << c2 << std::flush;
-                std::this_thread::sleep_for(std::chrono::milliseconds(75));  
-            }
-            std::cout << std::endl; 
-
-            int decimalValue = convertToDecimal(numberToConvert);
-            std::cout << "Decimal Version Of This Number is :: " << decimalValue << std::flush;
-            std::this_thread::sleep_for(std::chrono::milliseconds(75)); 
-            
-            
-        } else {
-            for (char c : text) {
-            std::cout << c << std::flush;
-            std::this_thread::sleep_for(std::chrono::milliseconds(75));  
-            }
-            std::cout << "" << std::endl;
-            std::this_thread::sleep_for(std::chrono::seconds(1));
-            for (char c4 : errorText) {
-            std::cout << c4 << std::flush;
-            std::this_thread::sleep_for(std::chrono::milliseconds(75));  
-            }
         }
     } else {
-        for (char c : text) {
-        std::cout << c << std::flush;
-        std::this_thread::sleep_for(std::chrono::milliseconds(75));  
+        int decimalNumber = std::stoi(inputNumber);
+        std::string hexadecimalNumber = decimalToHexadecimal(decimalNumber);
+        std::string text10 = "Hexadecimal Version Of This Number is:  0X";
+        for (char c10 : text10) {
+            std::cout << c10 << std::flush;
+            std::this_thread::sleep_for(std::chrono::milliseconds(55));  
         }
-        std::cout << "" << std::endl;
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-        for (char c4 : errorText) {
-        std::cout << c4 << std::flush;
-        std::this_thread::sleep_for(std::chrono::milliseconds(75));  
-        }
+        std::cout << hexadecimalNumber << std::endl;
     }
 
     return 0;
