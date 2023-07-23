@@ -11,7 +11,7 @@
 bool isValidHexadecimal(const std::string& hexNumber) {
     std::string validCharacters = "123456789ABCDEF";
 
-    
+    //checking the number-_-
     for (char ch : hexNumber) {
         if (validCharacters.find(std::toupper(ch)) == std::string::npos) {
             return false;
